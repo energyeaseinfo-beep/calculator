@@ -19,7 +19,7 @@
   --text-muted: #6b7280;
   --text-light: #b0b8c1;
   --border: #e5e7eb;
-  --bg: #f5f7f5;
+  --bg: transparent;
   --white: #ffffff;
   --radius: 22px;
   --shadow: 0 16px 56px rgba(0,0,0,0.13);
@@ -27,12 +27,11 @@
 
 body {
   font-family: 'Sora', sans-serif;
-  background: var(--bg);
-  min-height: 100vh;
+  background: transparent;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 32px 16px 64px;
+  padding: 0 16px 16px;
 }
 
 .widget {
@@ -259,14 +258,14 @@ body {
 /* ── Body ── */
 .b1-body {
   background: var(--bg);
-  padding: 16px 20px 22px;
+  padding: 12px 20px 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 /* Monthly anchor */
-.b1-anchor { text-align: center; padding: 18px 12px 14px; }
+.b1-anchor { text-align: center; padding: 10px 12px 8px; }
 .b1-anchor-label {
   font-size: 0.63rem;
   font-weight: 700;
