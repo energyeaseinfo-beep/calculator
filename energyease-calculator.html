@@ -327,8 +327,8 @@ const SOLUTIONS={
   pintura:{desc:'Pintura interior ou exterior de paredes e tetos.',tooltip:'Utilizamos tintas de alta qualidade com acabamento profissional. Interior para divisões, exterior para fachadas e muros.'},
 };
 let currentSolution='parede_dupla',currentPintura='binnen';
-// Verbreed de prijsrange met 25% rond het gemiddelde (MTIC blijft gelijk).
-const RANGE_WIDEN=1.25;
+// Verbreed de prijsrange met 2.5x rond het gemiddelde (MTIC blijft gelijk).
+const RANGE_WIDEN=2.5;
 function widenRange(min,max,avg){return{min:avg-(avg-min)*RANGE_WIDEN,max:avg+(max-avg)*RANGE_WIDEN,avg};}
 function getPrice(area){
   const n=Math.max(1,Math.round(area)),idx=n-1;
