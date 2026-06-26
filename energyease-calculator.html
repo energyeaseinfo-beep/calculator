@@ -329,7 +329,9 @@ const SOLUTIONS={
 let currentSolution='parede_dupla',currentPintura='binnen';
 // Verbreed de prijsrange met 2.5x rond het gemiddelde (MTIC blijft gelijk).
 const RANGE_WIDEN=2.5;
-function widenRange(min,max,avg){return{min:avg-(avg-min)*RANGE_WIDEN,max:avg+(max-avg)*RANGE_WIDEN,avg};}
+// Verhoog het gemiddelde met 10% (band blijft 2.5x).
+const AVG_MULT=1.1;
+function widenRange(min,max,avg){const a=avg*AVG_MULT;return{min:a-(avg-min)*RANGE_WIDEN,max:a+(max-avg)*RANGE_WIDEN,avg:a};}
 function getPrice(area){
   const n=Math.max(1,Math.round(area)),idx=n-1;
   if(currentSolution==='parede_dupla'){const min=PAREDE_4CM[Math.min(idx,PAREDE_4CM.length-1)]*n,max=PAREDE_8CM[Math.min(idx,PAREDE_8CM.length-1)]*n;return widenRange(min,max,(min+max)/2);}
