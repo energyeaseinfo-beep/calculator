@@ -397,5 +397,23 @@ setInterval(()=>{
 },45000);
 updateMeta();updateResults();
 </script>
+<script>
+  (function () {
+    var cta = document.querySelector('a[href*="wa.me"]');
+    if (!cta) return;
+    cta.addEventListener('click', function () {
+      try {
+        var solution = (document.getElementById('solutionSelect') || {}).value || '';
+        var area = (document.getElementById('areaInput') || {}).value || '';
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(
+            { type: 'ee_calculator_completion', solution: solution, area: area },
+            '*'
+          );
+        }
+      } catch (e) {}
+    });
+  })();
+</script>
 </body>
 </html>
