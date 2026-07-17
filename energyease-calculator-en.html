@@ -505,10 +505,11 @@ body {
       <div class="b1-field">
         <label>Type of insulation</label>
         <select id="solutionSelect" onchange="onSolutionChange()">
-          <option value="parede_dupla">Cavity Wall Insulation</option>
+          <option value="parede_dupla">Blown-in cavity wall insulation</option>
           <option value="cobertura">Roof Insulation</option>
-          <option value="teto_falso">False Ceiling Insulation</option>
-          <option value="paredes_tetos">Insulation with False Walls/Ceilings</option>
+          <option value="teto_falso">Blown-in insulation in existing false ceiling</option>
+          <option value="teto_falso_novo">New false ceiling with insulation</option>
+          <option value="parede_nova">New wall/partition with insulation</option>
           <option value="pavimento_sotao">Attic Floor Insulation</option>
           <option value="etics">ETICS/External Wall Insulation</option>
           <option value="pintura">Painting</option>
@@ -629,8 +630,9 @@ const COBERTURA_BASE=[1107.0,592.0,420.3,334.5,283.0,248.7,224.1,225.0,206.1,191
 const SOLUTIONS = {
   parede_dupla:    { desc: 'Injection of insulation into the existing cavity of the double wall.', tooltip: 'Ideal for homes with double walls (brick + brick). Insulation is injected into the interior cavity without visible works. Can reduce heat loss by up to 35%.' },
   cobertura:       { desc: 'Insulation applied to the roof or ceiling slab.', tooltip: 'Up to 30% of heat loss occurs through the roof. We insulate the slab or pitched roof for maximum energy efficiency.' },
-  teto_falso:      { desc: 'Installation of false ceiling with thermal and acoustic insulation.', tooltip: 'We create a false ceiling with integrated insulation. Improves thermal and acoustic comfort, ideal for upper floors.' },
-  paredes_tetos:   { desc: 'Construction of new walls or false ceilings with insulation.', tooltip: 'Solution for rooms without a cavity wall. We build an interior wall or ceiling with high-performance insulation.' },
+  teto_falso:      { desc: 'We blow insulation into the cavity of your existing false ceiling.', tooltip: 'Already have a false ceiling? We inject insulation into the cavity, no construction or demolition. Improves thermal and acoustic comfort in hours.' },
+  teto_falso_novo: { desc: 'We build a new false ceiling with integrated thermal and acoustic insulation.', tooltip: 'No false ceiling yet? We install a new one with built-in insulation. Ideal for upper floors or renovations.' },
+  parede_nova:     { desc: 'We build a new interior wall or partition with insulation.', tooltip: 'To divide spaces or insulate a wall without a cavity. We build a new wall with high-performance insulation.' },
   pavimento_sotao: { desc: 'Thermal insulation applied to the attic floor.', tooltip: 'Insulating the attic floor is one of the most cost-effective interventions. Prevents heat from escaping to unheated spaces.' },
   etics:           { desc: 'External thermal insulation system for the façade (ETICS/Capoto).', tooltip: 'ETICS/Capoto is applied to the exterior façade, eliminating thermal bridges. Improves appearance and can increase property value.' },
   pintura:         { desc: 'Interior or exterior painting of walls and ceilings.', tooltip: 'We use high-quality paints with a professional finish. Interior for rooms, exterior for facades and walls.' },
@@ -641,39 +643,42 @@ let currentSolution = 'parede_dupla';
 let currentPintura = 'binnen';
 
 // ─── Price logic ──────────────────────────────────────────────────────────────
+const RANGE_WIDEN=1.5;
+const AVG_MULT=1.05;
+function widenRange(min,max,avg){const a=avg*AVG_MULT;return{min:a-(avg-min)*RANGE_WIDEN,max:a+(max-avg)*RANGE_WIDEN,avg:a};}
 function getPrice(area) {
   const n = Math.max(1, Math.round(area));
   const idx = n - 1;
   if (currentSolution === 'parede_dupla') {
     const min = PAREDE_4CM[Math.min(idx, PAREDE_4CM.length-1)] * n;
     const max = PAREDE_8CM[Math.min(idx, PAREDE_8CM.length-1)] * n;
-    return { min, max, avg: (min+max)/2 };
+    return widenRange(min, max, (min+max)/2);
   }
   if (currentSolution === 'teto_falso') {
     const min = TETO_FALSO_MIN[Math.min(idx, TETO_FALSO_MIN.length-1)] * n;
     const max = TETO_FALSO_MAX[Math.min(idx, TETO_FALSO_MAX.length-1)] * n;
-    return { min, max, avg: (min+max)/2 };
+    return widenRange(min, max, (min+max)/2);
   }
   if (currentSolution === 'cobertura') {
     const b = COBERTURA_BASE[Math.min(idx, COBERTURA_BASE.length-1)] * n;
-    return { min: b*0.90, max: b*1.10, avg: b };
+    return widenRange(b*0.90, b*1.10, b);
   }
-  if (currentSolution === 'paredes_tetos') {
+  if (currentSolution === 'teto_falso_novo' || currentSolution === 'parede_nova') {
     const b = PAREDES_TETOS[Math.min(idx, PAREDES_TETOS.length-1)] * n;
-    return { min: b*0.90, max: b*1.10, avg: b };
+    return widenRange(b*0.90, b*1.10, b);
   }
   if (currentSolution === 'pavimento_sotao') {
     const b = PAVIMENTO_SOTAO[Math.min(idx, PAVIMENTO_SOTAO.length-1)] * n;
-    return { min: b*0.90, max: b*1.10, avg: b };
+    return widenRange(b*0.90, b*1.10, b);
   }
   if (currentSolution === 'etics') {
     const b = ETICS_CAPOTO[Math.min(idx, ETICS_CAPOTO.length-1)] * n;
-    return { min: b*0.90, max: b*1.10, avg: b };
+    return widenRange(b*0.90, b*1.10, b);
   }
   if (currentSolution === 'pintura') {
     const arr = currentPintura === 'buiten' ? PINTURA_BUITEN : PINTURA_BINNEN;
     const b = arr[Math.min(idx, arr.length-1)] * n;
-    return { min: b*0.85, max: b*1.15, avg: b };
+    return widenRange(b*0.85, b*1.15, b);
   }
   return null;
 }

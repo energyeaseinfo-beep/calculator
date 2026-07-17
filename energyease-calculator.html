@@ -227,10 +227,11 @@ body{
       <div class="field-group">
         <div class="field-label">Tipo de isolamento</div>
         <select id="solutionSelect" onchange="onSolutionChange()">
-          <option value="parede_dupla">Isolamento de Parede Dupla</option>
+          <option value="parede_dupla">Insuflação em parede dupla</option>
           <option value="cobertura">Isolamento de Cobertura</option>
-          <option value="teto_falso">Isolamento de Teto Falso</option>
-          <option value="paredes_tetos">Isolamento com Paredes/Tetos Falsos</option>
+          <option value="teto_falso">Insuflação em teto falso</option>
+          <option value="teto_falso_novo">Novo teto falso com isolamento</option>
+          <option value="parede_nova">Nova parede/divisória com isolamento</option>
           <option value="pavimento_sotao">Isolamento do Pavimento do Sotão</option>
           <option value="etics">ETICS/Capoto</option>
           <option value="pintura">Pintura</option>
@@ -320,24 +321,25 @@ const COBERTURA_BASE=[1107.0,592.0,420.3,334.5,283.0,248.7,224.1,225.0,206.1,191
 const SOLUTIONS={
   parede_dupla:{desc:'Injeção de isolamento na caixa de ar da parede dupla existente.',tooltip:'Ideal para casas com paredes duplas (tijolo + tijolo). O isolamento é injetado na cavidade interior sem obras visíveis. Pode reduzir perdas de calor até 35%.'},
   cobertura:{desc:'Isolamento aplicado na cobertura ou laje de teto.',tooltip:'Até 30% das perdas de calor ocorrem pelo teto. Isolamos a laje ou a cobertura inclinada para máxima eficiência energética.'},
-  teto_falso:{desc:'Instalação de teto falso com isolamento térmico e acústico.',tooltip:'Criamos um teto falso com isolamento integrado. Melhora o conforto térmico e acústico, ideal para pisos superiores.'},
-  paredes_tetos:{desc:'Construção de novas paredes ou tetos falsos com isolamento.',tooltip:'Solução para compartimentos sem caixa de ar. Construímos uma parede ou teto interior com isolamento de alta performance.'},
+  teto_falso:{desc:'Insuflamos isolamento na cavidade do seu teto falso já existente.',tooltip:'Já tem um teto falso? Injetamos isolamento na cavidade, sem obras nem demolição. Melhora o conforto térmico e acústico em poucas horas.'},
+  teto_falso_novo:{desc:'Construímos um novo teto falso, já com isolamento térmico e acústico integrado.',tooltip:'Não tem teto falso? Instalamos um novo teto falso com isolamento incorporado. Ideal para pisos superiores ou remodelações.'},
+  parede_nova:{desc:'Construímos uma nova parede ou divisória interior com isolamento.',tooltip:'Para dividir espaços ou isolar uma parede sem caixa de ar. Construímos uma parede nova com isolamento de alta performance.'},
   pavimento_sotao:{desc:'Isolamento térmico aplicado no pavimento do sótão.',tooltip:'Isolar o pavimento do sótão é uma das intervenções mais rentáveis. Impede que o calor escape para espaços não aquecidos.'},
   etics:{desc:'Sistema de isolamento térmico pelo exterior da fachada (Capoto).',tooltip:'O ETICS/Capoto é aplicado pelo exterior da fachada, eliminando pontes térmicas. Melhora o aspeto e pode aumentar o valor do imóvel.'},
   pintura:{desc:'Pintura interior ou exterior de paredes e tetos.',tooltip:'Utilizamos tintas de alta qualidade com acabamento profissional. Interior para divisões, exterior para fachadas e muros.'},
 };
 let currentSolution='parede_dupla',currentPintura='binnen';
 // Verbreed de prijsrange met 2.5x rond het gemiddelde (MTIC blijft gelijk).
-const RANGE_WIDEN=2.5;
+const RANGE_WIDEN=1.5;
 // Verhoog het gemiddelde met 10% (band blijft 2.5x).
-const AVG_MULT=1.1;
+const AVG_MULT=1.05;
 function widenRange(min,max,avg){const a=avg*AVG_MULT;return{min:a-(avg-min)*RANGE_WIDEN,max:a+(max-avg)*RANGE_WIDEN,avg:a};}
 function getPrice(area){
   const n=Math.max(1,Math.round(area)),idx=n-1;
   if(currentSolution==='parede_dupla'){const min=PAREDE_4CM[Math.min(idx,PAREDE_4CM.length-1)]*n,max=PAREDE_8CM[Math.min(idx,PAREDE_8CM.length-1)]*n;return widenRange(min,max,(min+max)/2);}
   if(currentSolution==='teto_falso'){const min=TETO_FALSO_MIN[Math.min(idx,TETO_FALSO_MIN.length-1)]*n,max=TETO_FALSO_MAX[Math.min(idx,TETO_FALSO_MAX.length-1)]*n;return widenRange(min,max,(min+max)/2);}
   if(currentSolution==='cobertura'){const b=COBERTURA_BASE[Math.min(idx,COBERTURA_BASE.length-1)]*n;return widenRange(b*0.90,b*1.10,b);}
-  if(currentSolution==='paredes_tetos'){const b=PAREDES_TETOS[Math.min(idx,PAREDES_TETOS.length-1)]*n;return widenRange(b*0.90,b*1.10,b);}
+  if(currentSolution==='teto_falso_novo'||currentSolution==='parede_nova'){const b=PAREDES_TETOS[Math.min(idx,PAREDES_TETOS.length-1)]*n;return widenRange(b*0.90,b*1.10,b);}
   if(currentSolution==='pavimento_sotao'){const b=PAVIMENTO_SOTAO[Math.min(idx,PAVIMENTO_SOTAO.length-1)]*n;return widenRange(b*0.90,b*1.10,b);}
   if(currentSolution==='etics'){const b=ETICS_CAPOTO[Math.min(idx,ETICS_CAPOTO.length-1)]*n;return widenRange(b*0.90,b*1.10,b);}
   if(currentSolution==='pintura'){const arr=currentPintura==='buiten'?PINTURA_BUITEN:PINTURA_BINNEN,b=arr[Math.min(idx,arr.length-1)]*n;return widenRange(b*0.85,b*1.15,b);}
