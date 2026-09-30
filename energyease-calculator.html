@@ -387,16 +387,6 @@ function setPintura(val,btn){
   document.querySelectorAll('#pinturaGroup .pill').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');updateResults();
 }
-// Daily live counter
-const dayNum=Math.floor((new Date()-(new Date(new Date().getFullYear(),0,0)))/86400000);
-const dailyCount=8+((dayNum*1731+42)%100%40);
-const liveEl=document.getElementById('liveCount');
-liveEl.textContent=dailyCount;
-let live=dailyCount;
-setInterval(()=>{
-  live++;liveEl.style.transition='opacity 0.3s';liveEl.style.opacity='0';
-  setTimeout(()=>{liveEl.textContent=live;liveEl.style.opacity='1';},300);
-},45000);
 updateMeta();updateResults();
 </script>
 <script>
