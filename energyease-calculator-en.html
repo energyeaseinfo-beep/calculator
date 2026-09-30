@@ -755,22 +755,6 @@ function setPintura(val, btn) {
 }
 
 // ─── Daily live counter ───────────────────────────────────────────────────────
-function getDayOfYear() {
-  const now = new Date();
-  return Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-}
-const dayNum = getDayOfYear();
-const seed = (dayNum * 1731 + 42) % 100;
-const dailyCount = 8 + (seed % 40);
-const liveEl = document.getElementById('liveCount');
-liveEl.textContent = dailyCount;
-let live = dailyCount;
-setInterval(() => {
-  live++;
-  liveEl.style.transition = 'opacity 0.3s';
-  liveEl.style.opacity = '0';
-  setTimeout(() => { liveEl.textContent = live; liveEl.style.opacity = '1'; }, 300);
-}, 45000);
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 updateMeta();
